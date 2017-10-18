@@ -154,17 +154,21 @@ print("finished pre processing states")
 num_features = window_size * num_sensors
 feature_matrix = np.zeros((num_samples, num_features))
 label_vector = np.zeros(num_samples)
+
 for i in range(num_samples):
-	data = lines[i].split()
+	sample_index = activity_indices[i]
+	data = lines[sample_index].split()
 
 	# add activity to label vector
 	activity = data[4]
 	label_vector[i] = encoded_activity(activity)
 
 	# add window_size features to feature_matrix
-	features = np.zeros(num_features)
-	sample_index = activity_indices[i]
+	features = np.zeros(0)
 
 	for j in range(window_size):
 		line = lines[sample_index + j].split()
-		features[j]
+		np.append(features,states[sample_index + j])
+
+#TODO save feature matrix and label vector as python pkl file
+print("finished constructing feature matrix and label vector")
