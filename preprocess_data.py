@@ -124,51 +124,75 @@ Create a matrix that is num_features x num_samples.
 window_size = 20 events after activity begins
 
 '''
+def create_states():
+	with open(filename) as f:
+		lines = f.read().splitlines()
+	num_samples = 0
+	activity_indices = []
+	# at the beginning all sensors are 0
+	states = np.zeros((len(lines), num_sensors))
+	prev_state = np.zeros(num_sensors)
+	for i in range(len(lines)):
+		line = lines[i]
+		line_contents = line.split()
+		
+		# modify the state
+		sensor_index, sensor_state = process_state(line_contents[2], line_contents[3])
+		current_state = np.copy(prev_state)
+		current_state[sensor_index] = sensor_state
 
-with open(filename) as f:
-	lines = f.read().splitlines()
-num_samples = 0
-activity_indices = []
-# at the beginning all sensors are 0
-states = np.zeros((len(lines), num_sensors))
-prev_state = np.zeros(num_sensors)
-for i in range(len(lines)):
-	line = lines[i]
-	line_contents = line.split()
-	
-	# modify the state
-	sensor_index, sensor_state = process_state(line_contents[2], line_contents[3])
-	current_state = np.copy(prev_state)
-	current_state[sensor_index] = sensor_state
+		states[i] = current_state
+		prev_state = current_state
 
-	states[i] = current_state
-	prev_state = current_state
+		# detect if an activity has begun
+		if len(line_contents) == 6 and line_contents[5] == "begin":
+			num_samples += 1
+			activity_indices.append(i)
+	print(states.shape)
+	print("finished pre processing states")
+	# state matrix is too big to save via np, so i've commented it out for now
+	# states.dump("states.npy")
+	# activity_indices.dump("activity_indices.npy")
+	# print("finished caching states")
+	return states, activity_indices
 
-	# detect if an activity has begun
-	if len(line_contents) == 6 and line_contents[5] == "begin":
-		num_samples += 1
-		activity_indices.append(i)
-print("finished pre processing states")
-# TODO save states as python pkl file to save time in the future
+def create_feature_matrix(states_cached=False):
+	with open(filename) as f:
+		lines = f.read().splitlines()
+	print("caching feature matrix")
+	if states_cached:
+		states = np.load("states.npy")
+		activity_indices = np.load("activity_indices.npy")
+	states, activity_indices = create_states()
+	num_samples = len(activity_indices)
+	num_features = window_size * num_sensors
+	feature_matrix = np.zeros((num_samples, num_features))
+	label_vector = np.zeros(num_samples)
 
-num_features = window_size * num_sensors
-feature_matrix = np.zeros((num_samples, num_features))
-label_vector = np.zeros(num_samples)
+	for i in range(num_samples):
+		sample_index = activity_indices[i]
+		data = lines[sample_index].split()
 
-for i in range(num_samples):
-	sample_index = activity_indices[i]
-	data = lines[sample_index].split()
+		# add activity to label vector
+		activity = data[4]
+		label_vector[i] = encoded_activity(activity)
 
-	# add activity to label vector
-	activity = data[4]
-	label_vector[i] = encoded_activity(activity)
+		# add window_size features to feature_matrix
+		features = np.zeros(0)
 
-	# add window_size features to feature_matrix
-	features = np.zeros(0)
+		for j in range(window_size):
+			line = lines[sample_index + j].split()
+			features = np.append(features,states[sample_index + j])
+		feature_matrix[i] = features
+	feature_matrix.dump(open("features.npy", "wb"))
+	label_vector.dump(open("labels.npy", "wb"))
 
-	for j in range(window_size):
-		line = lines[sample_index + j].split()
-		np.append(features,states[sample_index + j])
+	#TODO save feature matrix and label vector as python pkl file
+	print("finished constructing feature matrix and label vector")
 
-#TODO save feature matrix and label vector as python pkl file
-print("finished constructing feature matrix and label vector")
+def main():
+    # create_states()
+    create_feature_matrix()
+
+if __name__ == "__main__":
+    main()
