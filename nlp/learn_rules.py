@@ -150,14 +150,17 @@ def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=Tru
 
 	# Begin evaluation
 	if verbose: print("Building for evaluation")
-	X_train, X_test, y_train, y_test = tts(X, y, test_size=0.2)
+	X_train, X_test, y_train, y_test = tts(X, y, test_size=0.5)
 	model = build(classifier, X_train, y_train)
 
 	if verbose: print("Classification Report:\n")
 
 	y_pred = model.predict(X_test)
-	print(clsr(y_test, y_pred, target_names=labels.classes_))
-
+	print(y_pred)
+	print(y_test)
+	accuracy = [1 if y_pred[i] == y_test[i] else 0 for i in range(len(y_pred))]
+	# print(clsr(y_test, y_pred))
+	print("Accuracy: " + str(sum(accuracy) / float(len(accuracy))))
 	if verbose: print("Building complete model and saving ...")
 	model = build(classifier, X, y)
 	model.labels_ = labels
@@ -176,15 +179,18 @@ def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=Tru
 if __name__ == "__main__":
 	PATH = "model.pickle"
 	if not os.path.exists(PATH):
-		print(sys.getdefaultencoding())
 		# Time to build the model
-		from nltk.corpus import movie_reviews as reviews
-		UTTERANCES_NPY_FILENAME = "utterances.npy"
-
-		utterances = np.load(UTTERANCES_NPY_FILENAME)
-		X = [u.decode('utf-8') for u in utterances]
-		y = [foo for foo in np.random.randint(1, 10, len(X))]
-		print(X)
+		X = []
+		y = []
+		with open("utterances.txt", "r") as f:
+			lines = f.readlines()
+			for line in lines:
+				line = line.split("|")
+				# print(line)
+				X.append(line[0].decode('utf-8'))
+				y.append(int(line[1]))
+		# print(X)
+		# print(y)
 		# print(len(y))
 		model = build_and_evaluate(X,y, outpath=PATH)
 

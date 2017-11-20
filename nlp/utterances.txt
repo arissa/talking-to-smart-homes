@@ -1,0 +1,26 @@
+If I am not going to be home, please turn the living room light on.|5
+Turn on the lights, when I am entering the home.|4
+Turn on the lights, while I am cooking dinner.|6
+Turn off the lights while I am sleeping in bed.|8 
+Turn on the lights while I am bathing.|0
+Turn on the lights when I am going from my bed to the bathroom.|1
+Turn off the lights in the bathroom if the kids are done brushing their teeth.|7
+Turn on the lights in the hallway if I get up to go to the bathroom.|1
+Turn on the outside lights when I pull into the driveway.|3
+I'm going to the bathroom, turn on the lights.|1
+I'm leaving now so turn off the lights.|5
+I'm cooking so turn on the kitchen light.|6
+Turn off the lights, the movie has started.|11
+Turn on the lights, I just woke up.|8
+Turn on the lights in the kitchen.|6
+Turn off the lights when I’m on the computer.|12
+Turn off the lights, please, I'm falling asleep on the couch.|9
+Turn on the lights when I'm cooking.|6
+Turn off the lights, I'm done in the bath.|0
+Please turn on the lights when I'm shaving.|7
+Lights on, I'm home!|3
+I'm taking a bath, turn off the lights.|0
+I'm home, turn on the lights.|3
+I'm watching TV, turn off the lights.|11
+When I get out of bed, turn on the lights.|8
+Turn on the lights, I'm using the bathroom.|0

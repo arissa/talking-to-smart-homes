@@ -7,36 +7,36 @@ UTTERANCES_NPY_FILENAME = "utterances.npy"
 UTTERANCES_CSV_FILENAME = "utterances.csv"
 
 class Activity(Enum):
-	Bathing = 1
-	BedToToilet = 2
-	Eating = 3
-	EnteringHome = 4
-	LeavingHome = 5
-	Housekeeping = 6
-	PreparingMeals = 7
-	PersonalHygiene = 8
-	SleepingInBed = 9
-	SleepingNotInBed = 10
-	WanderingInRoom = 11
-	WatchTV = 12
-	Work = 13
+	Bathing = 0
+	Bed_Toilet_Transition = 1
+	Eating = 2
+	Enter_Home = 3
+	Housekeeping = 4
+	Leave_Home = 5
+	Meal_Preparation = 6
+	Personal_Hygiene = 7
+	Sleep = 8
+	Sleeping_Not_in_Bed = 9
+	Wandering_in_room = 10
+	Watch_TV = 11
+	Work = 12
 
 # TODO: is there some way to generalize this,
 # in case other datasets have different activities?
 # also, my root word choices are probably not the best
 ACTIVITIES_TO_ROOT_WORDS = {
 	Activity.Bathing:["bath"],
-	# Activity.BedToToilet: ["bed"],
+	# Activity.Bed_Toilet_Transition: ["bed"],
 	Activity.Eating:["kitchen", "eat"],
-	Activity.EnteringHome:["enter", "arrive"],
-	Activity.LeavingHome:["leave"],
+	Activity.Enter_Home:["enter", "arrive"],
+	Activity.Leave_Home:["leave"],
 	Activity.Housekeeping:["housekeeping"],
-	Activity.PreparingMeals:["cook"],
-	Activity.PersonalHygiene:["bathroom"],
-	Activity.SleepingInBed:["sleep"],
-	Activity.SleepingNotInBed:["sleep"],
-	Activity.WanderingInRoom:["wandering"],
-	Activity.WatchTV:["tv"],
+	Activity.Meal_Preparation:["cook"],
+	Activity.Personal_Hygiene:["bathroom"],
+	Activity.Sleep:["sleep"],
+	Activity.Sleeping_Not_in_Bed:["sleep"],
+	Activity.Wandering_in_room:["wandering"],
+	Activity.Watch_TV:["tv"],
 	Activity.Work:["work"]
 	}
 
@@ -124,7 +124,15 @@ def parse_utterances(utterances):
 		
 
 def main():
-	utterances = np.load(UTTERANCES_NPY_FILENAME)
-	parse_utterances(utterances)
+
+	# utterances = np.load(UTTERANCES_NPY_FILENAME)
+	# processed_utterances = [u + "#" for u in utterances]
+	# for u in utterances:
+
+
+	# print(utterances[0])
+	# print(utterances.shape)
+	# np.savetxt(open("processed_utterances.txt", "wb"), utterances, fmt="%s")
+	# parse_utterances(utterances)
 
 main()
