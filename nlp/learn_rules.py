@@ -16,13 +16,18 @@ from nltk import pos_tag
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.linear_model import SGDClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LinearRegression
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import classification_report as clsr
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cross_validation import train_test_split as tts
-
-
+from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.naive_bayes import MultinomialNB
 
 def identity(arg):
 	"""
@@ -92,6 +97,7 @@ class NLTKPreprocessor(BaseEstimator, TransformerMixin):
 
 				# Lemmatize the token and yield
 				lemma = self.lemmatize(token, tag)
+				# print(lemma)
 				yield lemma
 
 	def lemmatize(self, token, tag):
@@ -111,6 +117,8 @@ class NLTKPreprocessor(BaseEstimator, TransformerMixin):
 
 
 def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=True):
+# def build_and_evaluate(X, y, classifier=OneVsRestClassifier, outpath=None, verbose=True):
+
 	"""
 	Builds a classifer for the given list of documents and targets in two
 	stages: the first does a train/test split and prints a classifier report,
@@ -133,7 +141,10 @@ def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=Tru
 		Inner build function that builds a single model.
 		"""
 		if isinstance(classifier, type):
-			classifier = classifier()
+			# classifier = OneVsRestClassifier(LinearSVC(random_state=0, C=100000000.))
+			# classifier = OneVsRestClassifier(SVC(kernel='poly'))
+			classifier = MultinomialNB(alpha=0.05)
+			# classifier = classifier(n_iter=10000000)
 
 		model = Pipeline([
 			('preprocessor', NLTKPreprocessor()),
@@ -147,17 +158,19 @@ def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=Tru
 	# Label encode the targets
 	labels = LabelEncoder()
 	y = labels.fit_transform(y)
-
+	# print(labels.classes_)
+	# labels = MultiLabelBinarizer()
+	# y = labels.fit_transform(y)
 	# Begin evaluation
 	if verbose: print("Building for evaluation")
 	X_train, X_test, y_train, y_test = tts(X, y, test_size=0.5)
 	model = build(classifier, X_train, y_train)
 
-	if verbose: print("Classification Report:\n")
+	# if verbose: print("Classification Report:\n")
 
 	y_pred = model.predict(X_test)
-	print(y_pred)
-	print(y_test)
+	print("Predicted: " + str(y_pred))
+	print("Actual: " + str(y_test))
 	accuracy = [1 if y_pred[i] == y_test[i] else 0 for i in range(len(y_pred))]
 	# print(clsr(y_test, y_pred))
 	print("Accuracy: " + str(sum(accuracy) / float(len(accuracy))))
@@ -178,7 +191,7 @@ def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=Tru
 
 if __name__ == "__main__":
 	PATH = "model.pickle"
-	if not os.path.exists(PATH):
+	if True:#not os.path.exists(PATH):
 		# Time to build the model
 		X = []
 		y = []

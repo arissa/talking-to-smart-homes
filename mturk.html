@@ -4,9 +4,13 @@
 <div class="row">
 <p dir="ltr">&nbsp;</p>
 
-<p dir="ltr">You are an occupant in a smart home that has an automatic light system installed. The lights can turn on and off when you are doing certain activities. <strong>Please create 5&nbsp;commands that you would say to the house to tell it whether the lights should be on or off when you are performing certain activities.</strong></p>
+<p dir="ltr">You are an occupant in a smart home that has an automatic light system installed. The lights can turn on and off when you are doing certain activities.</p>
 
-<p dir="ltr">Activities include:</p>
+<p><strong>The smart home can only recognize commands to turn the lights on or off.</strong></p>
+
+<p><strong>Please create 5&nbsp;commands that you would say to the house to tell it whether the lights should be on or off when you are performing certain activities.</strong></p>
+
+<p dir="ltr">Activities the smart home recognizes:</p>
 
 <ul>
 	<li dir="ltr">Bathing</li>
@@ -33,6 +37,7 @@
 	<li dir="ltr">Turn on the lights when I&rsquo;m in the kitchen.</li>
 	<li dir="ltr">Turn on the lights, I&rsquo;m brushing my teeth.</li>
 </ul>
+
 </div>
 
 <br/>
@@ -63,10 +68,10 @@
 
 <ol>
 	<li>
-  <label>Create a command according to the guidelines above.</label> 
+  <label>Create a command according to the guidelines above. (required)</label> 
     <input class="form-control" id="WritingTexts" name="WritingTexts" type="text" />
     <div class="panel-body">
-      <label>What is the corresponding activity to this command?</label>
+      <label>What activity would you be doing when you say this command? (required)</label>
       <select class="form-control" name="Activity">
         <option selected="selected" value="select one">- select one -</option>
         <option value="Bathing">Bathing</option>
@@ -87,10 +92,56 @@
   </li>
 
   <li>
-  <label>Create a command according to the guidelines above.</label> 
+  <label>Create a command according to the guidelines above. (required)</label> 
     <input class="form-control" id="WritingTexts" name="WritingTexts" type="text" />
     <div class="panel-body">
-      <label>What activity would you be doing when you say this command?</label>
+      <label>What activity would you be doing when you say this command? (required)</label>
+      <select class="form-control" name="Activity">
+        <option selected="selected" value="select one">- select one -</option>
+        <option value="Bathing">Bathing</option>
+        <option value="Bed_Toilet_Transition">Going from the bed to toilet</option>
+        <option value="Eating">Eating</option>
+        <option value="Enter_Home">Entering home</option>
+        <option value="Housekeeping">Housekeeping</option>
+        <option value="Leave_Home">Leaving home</option>
+        <option value="Meal_Preparation">Preparing meals</option>
+        <option value="Personal_Hygiene">Personal hygiene</option>
+        <option value="Sleep">Sleeping (in bed)</option>
+        <option value="Sleeping_Not_in_Bed">Sleeping (not in bed)</option>
+        <option value="Wandering_in_room">Wandering in room</option>
+        <option value="Watch_TV">Watch TV</option>
+        <option value="Work">Work</option>
+      </select>
+    </div>
+  </li>
+  <li>
+  <label>Create a command according to the guidelines above. (required)</label> 
+    <input class="form-control" id="WritingTexts" name="WritingTexts" type="text" />
+    <div class="panel-body">
+      <label>What activity would you be doing when you say this command? (required)</label>
+      <select class="form-control" name="Activity">
+        <option selected="selected" value="select one">- select one -</option>
+        <option value="Bathing">Bathing</option>
+        <option value="Bed_Toilet_Transition">Going from the bed to toilet</option>
+        <option value="Eating">Eating</option>
+        <option value="Enter_Home">Entering home</option>
+        <option value="Housekeeping">Housekeeping</option>
+        <option value="Leave_Home">Leaving home</option>
+        <option value="Meal_Preparation">Preparing meals</option>
+        <option value="Personal_Hygiene">Personal hygiene</option>
+        <option value="Sleep">Sleeping (in bed)</option>
+        <option value="Sleeping_Not_in_Bed">Sleeping (not in bed)</option>
+        <option value="Wandering_in_room">Wandering in room</option>
+        <option value="Watch_TV">Watch TV</option>
+        <option value="Work">Work</option>
+      </select>
+    </div>
+  </li>
+  <li>
+  <label>Create a command according to the guidelines above. (required)</label> 
+    <input class="form-control" id="WritingTexts" name="WritingTexts" type="text" />
+    <div class="panel-body">
+      <label>What activity would you be doing when you say this command? (required)</label>
       <select class="form-control" name="Activity">
         <option selected="selected" value="select one">- select one -</option>
         <option value="Bathing">Bathing</option>
@@ -113,53 +164,7 @@
   <label>Create a command according to the guidelines above.</label> 
     <input class="form-control" id="WritingTexts" name="WritingTexts" type="text" />
     <div class="panel-body">
-      <label>What activity would you be doing when you say this command?</label>
-      <select class="form-control" name="Activity">
-        <option selected="selected" value="select one">- select one -</option>
-        <option value="Bathing">Bathing</option>
-        <option value="Bed_Toilet_Transition">Going from the bed to toilet</option>
-        <option value="Eating">Eating</option>
-        <option value="Enter_Home">Entering home</option>
-        <option value="Housekeeping">Housekeeping</option>
-        <option value="Leave_Home">Leaving home</option>
-        <option value="Meal_Preparation">Preparing meals</option>
-        <option value="Personal_Hygiene">Personal hygiene</option>
-        <option value="Sleep">Sleeping (in bed)</option>
-        <option value="Sleeping_Not_in_Bed">Sleeping (not in bed)</option>
-        <option value="Wandering_in_room">Wandering in room</option>
-        <option value="Watch_TV">Watch TV</option>
-        <option value="Work">Work</option>
-      </select>
-    </div>
-  </li>
-  <li>
-  <label>Create a command according to the guidelines above.</label> 
-    <input class="form-control" id="WritingTexts" name="WritingTexts" type="text" />
-    <div class="panel-body">
-      <label>What activity would you be doing when you say this command?</label>
-      <select class="form-control" name="Activity">
-        <option selected="selected" value="select one">- select one -</option>
-        <option value="Bathing">Bathing</option>
-        <option value="Bed_Toilet_Transition">Going from the bed to toilet</option>
-        <option value="Eating">Eating</option>
-        <option value="Enter_Home">Entering home</option>
-        <option value="Housekeeping">Housekeeping</option>
-        <option value="Leave_Home">Leaving home</option>
-        <option value="Meal_Preparation">Preparing meals</option>
-        <option value="Personal_Hygiene">Personal hygiene</option>
-        <option value="Sleep">Sleeping (in bed)</option>
-        <option value="Sleeping_Not_in_Bed">Sleeping (not in bed)</option>
-        <option value="Wandering_in_room">Wandering in room</option>
-        <option value="Watch_TV">Watch TV</option>
-        <option value="Work">Work</option>
-      </select>
-    </div>
-  </li>
-  <li>
-  <label>Create a command according to the guidelines above.</label> 
-    <input class="form-control" id="WritingTexts" name="WritingTexts" type="text" />
-    <div class="panel-body">
-      <label>What activity would you be doing when you say this command?</label>
+      <label>What activity would you be doing when you say this command? (required)</label>
       <select class="form-control" name="Activity">
         <option selected="selected" value="select one">- select one -</option>
         <option value="Bathing">Bathing</option>
