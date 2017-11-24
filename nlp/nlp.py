@@ -3,6 +3,9 @@ from nltk.corpus import wordnet as wn
 import csv
 import numpy as np
 from enum import Enum
+import glob, os
+import pandas
+
 UTTERANCES_NPY_FILENAME = "utterances.npy"
 UTTERANCES_CSV_FILENAME = "utterances.csv"
 
@@ -21,25 +24,6 @@ class Activity(Enum):
 	Watch_TV = 11
 	Work = 12
 
-# TODO: is there some way to generalize this,
-# in case other datasets have different activities?
-# also, my root word choices are probably not the best
-ACTIVITIES_TO_ROOT_WORDS = {
-	Activity.Bathing:["bath"],
-	# Activity.Bed_Toilet_Transition: ["bed"],
-	Activity.Eating:["kitchen", "eat"],
-	Activity.Enter_Home:["enter", "arrive"],
-	Activity.Leave_Home:["leave"],
-	Activity.Housekeeping:["housekeeping"],
-	Activity.Meal_Preparation:["cook"],
-	Activity.Personal_Hygiene:["bathroom"],
-	Activity.Sleep:["sleep"],
-	Activity.Sleeping_Not_in_Bed:["sleep"],
-	Activity.Wandering_in_room:["wandering"],
-	Activity.Watch_TV:["tv"],
-	Activity.Work:["work"]
-	}
-
 # for BedToToilet amd SleepingInBed, how do we determine which bedroom is relevant?
 # Otherwise the lights in all 3 bedrooms will turn on and off.
 # This dictionary was created using the 2010 dataset.
@@ -47,19 +31,29 @@ ACTIVITIES_TO_ROOT_WORDS = {
 # activities_to_lights = {Activity.Bathing:[11, 16], Activity.BedToToilet: [7, 8, 9, 10, 16], Activity.Eating: [3, 4, 5]}
 
 
-def extract_utterances_from_csv(csv_filename, npy_filename):
-	with open(csv_filename, "rb") as f:
-		reader = csv.reader(f)
-		data = [row for row in reader]
-	utterances = []
-	for i in range(1, len(data)):
-		response = data[i][-1]
-		response = response.split("|")
-		utterances.extend(response)
-	utterances = np.array(utterances)
-	print(utterances)
-	np.save(npy_filename, utterances)
-	print(str(len(utterances)) + " utterances extracted and saved at " + npy_filename)
+def extract_utterances_from_csv(list_of_csv_filenames, savetxt_filename):
+	final_utterances = []
+	final_labels = []
+	for csv_filename in list_of_csv_filenames:
+		with open(csv_filename, "rb") as f:
+			reader = csv.DictReader(f)
+			print(reader.fieldnames)
+			for row in reader:
+				utterances = row['Answer.WritingTexts']
+				labels = row['Answer.Activity']
+				utterances = utterances.split("|")
+				labels = labels.split("|")
+				final_utterances.extend(utterances)
+				final_labels.extend(labels)
+		if len(final_utterances) != len(final_labels):
+				print("CSV IS NOT FORMATTED CORRECTLY. MISMATCHING NUMBER OF LABELS AND UTTERANCES.")
+
+	final_utterances_and_labels = [None, None]
+	final_utterances_and_labels[0] = final_utterances
+	final_utterances_and_labels[1] = final_labels
+	np.savetxt(open(savetxt_filename, "wb"), final_utterances_and_labels, fmt="%s")
+
+	print(str(len(final_utterances)) + " utterances and labels extracted and saved at " + savetxt_filename)
 
 
 def get_activity(utterance, activity_to_synonym_dict):
@@ -122,17 +116,14 @@ def parse_utterances(utterances):
 		# TODO get relevant lights based on activity
 		# also, how do we handle unidentifiable activities?
 		
+def from_labels_to_logical_representation():
+	pass
 
 def main():
+	csv_filenames = []
+	for file in glob.glob("utterances/*.csv"):
+		csv_filenames.append(file)
+	extract_utterances_from_csv(csv_filenames, "labeled_utterances.txt")
 
-	# utterances = np.load(UTTERANCES_NPY_FILENAME)
-	# processed_utterances = [u + "#" for u in utterances]
-	# for u in utterances:
-
-
-	# print(utterances[0])
-	# print(utterances.shape)
-	# np.savetxt(open("processed_utterances.txt", "wb"), utterances, fmt="%s")
-	# parse_utterances(utterances)
 
 main()
