@@ -143,7 +143,8 @@ def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=Tru
 		if isinstance(classifier, type):
 			# classifier = OneVsRestClassifier(LinearSVC(random_state=0, C=100000000.))
 			# classifier = OneVsRestClassifier(SVC(kernel='poly'))
-			classifier = MultinomialNB(alpha=0.05)
+			# classifier = MultinomialNB(alpha=0.05)
+			classifier=classifier()
 			# classifier = classifier(n_iter=10000000)
 
 		model = Pipeline([
@@ -163,7 +164,7 @@ def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=Tru
 	# y = labels.fit_transform(y)
 	# Begin evaluation
 	if verbose: print("Building for evaluation")
-	X_train, X_test, y_train, y_test = tts(X, y, test_size=0.5)
+	X_train, X_test, y_train, y_test = tts(X, y, test_size=0.2)
 	model = build(classifier, X_train, y_train)
 
 	# if verbose: print("Classification Report:\n")
@@ -187,7 +188,56 @@ def build_and_evaluate(X, y, classifier=SGDClassifier, outpath=None, verbose=Tru
 
 	return model
 
+def show_most_informative_features(model, text=None, n=20):
+	"""
+	Accepts a Pipeline with a classifer and a TfidfVectorizer and computes
+	the n most informative features of the model. If text is given, then will
+	compute the most informative features for classifying that text.
+	Note that this function will only work on linear models with coefs_
+	"""
+	# Extract the vectorizer and the classifier from the pipeline
+	vectorizer = model.named_steps['vectorizer']
+	classifier = model.named_steps['classifier']
 
+	# Check to make sure that we can perform this computation
+	if not hasattr(classifier, 'coef_'):
+		raise TypeError(
+			"Cannot compute most informative features on {} model.".format(
+				classifier.__class__.__name__
+			)
+		)
+
+	if text is not None:
+		# Compute the coefficients for the text
+		tvec = model.transform([text]).toarray()
+	else:
+		# Otherwise simply use the coefficients
+		tvec = classifier.coef_
+
+	# Zip the feature names with the coefs and sort
+	coefs = sorted(
+		zip(tvec[0], vectorizer.get_feature_names()),
+		key=itemgetter(0), reverse=True
+	)
+
+	topn  = zip(coefs[:n], coefs[:-(n+1):-1])
+
+	# Create the output string to return
+	output = []
+
+	# If text, add the predicted value to the output.
+	if text is not None:
+		output.append("\"{}\"".format(text))
+		output.append("Classified as: {}".format(model.predict([text])))
+		output.append("")
+
+	# Create two columns with most negative and most positive features.
+	for (cp, fnp), (cn, fnn) in topn:
+		output.append(
+			"{:0.4f}{: >15}    {:0.4f}{: >15}".format(cp, fnp, cn, fnn)
+		)
+
+	return "\n".join(output)
 
 if __name__ == "__main__":
 	PATH = "model.pickle"
@@ -195,17 +245,26 @@ if __name__ == "__main__":
 		# Time to build the model
 		X = []
 		y = []
-		with open("utterances.txt", "r") as f:
+		with open("labeled_utterances.txt", "r") as f:
 			lines = f.readlines()
-			for line in lines:
-				line = line.split("|")
-				# print(line)
-				X.append(line[0].decode('utf-8'))
-				y.append(int(line[1]))
+		utterances = lines[0].split("|")
+		for utterance in utterances:
+			# print(utterance)
+			utterance = utterance.decode('utf-8')
+		X = utterances
+		y = lines[1].split("|")
+		# with open("utterances.txt", "r") as f:
+		#   lines = f.readlines()
+		#   for line in lines:
+		#       line = line.split("|")
+		#       # print(line)
+		#       X.append(line[0].decode('utf-8'))
+		#       y.append(int(line[1]))
 		# print(X)
 		# print(y)
 		# print(len(y))
 		model = build_and_evaluate(X,y, outpath=PATH)
+		print(show_most_informative_features(model, "i'm sleeping, turn off the light in the bedroom"))
 
 	else:
 		with open(PATH, 'rb') as f:

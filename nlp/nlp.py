@@ -41,7 +41,7 @@ def extract_utterances_from_csv(list_of_csv_filenames, savetxt_filename):
 			for row in reader:
 				utterances = row['Answer.WritingTexts']
 				labels = row['Answer.Activity']
-				utterances = utterances.split("|")
+				utterances = [u.decode('utf-8') for u in utterances.split("|")]
 				labels = labels.split("|")
 				final_utterances.extend(utterances)
 				final_labels.extend(labels)
@@ -51,7 +51,7 @@ def extract_utterances_from_csv(list_of_csv_filenames, savetxt_filename):
 	final_utterances_and_labels = [None, None]
 	final_utterances_and_labels[0] = final_utterances
 	final_utterances_and_labels[1] = final_labels
-	np.savetxt(open(savetxt_filename, "wb"), final_utterances_and_labels, fmt="%s")
+	np.savetxt(open(savetxt_filename, "wb"), final_utterances_and_labels, fmt="%s", delimiter="|")
 
 	print(str(len(final_utterances)) + " utterances and labels extracted and saved at " + savetxt_filename)
 
