@@ -139,7 +139,7 @@ def create_labels(labels_string):
         one_hot_label = np.zeros((1, NUM_ACTIVITY_LABELS))
         label = labels_string[i].lower().strip()
         index = ACTIVITY_LABELS[label]
-        one_hot_label[:, index] = 1
+        one_hot_label[:,index] = 1
         total_labels[i] = one_hot_label
     return total_labels
 

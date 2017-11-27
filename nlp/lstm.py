@@ -3,13 +3,12 @@ from keras.layers import LSTM, Dense
 from keras.optimizers import RMSprop
 import numpy as np
 
-FEATURES_PATH = "data/features.npy"
-LABELS_PATH = "data/labels.npy"
+FEATURES_PATH = "data/lstm/features.npy"
+LABELS_PATH = "data/lstm/labels.npy"
 
 if __name__ == "__main__":
     features = np.load(FEATURES_PATH)
     labels = np.load(LABELS_PATH)
-    # labels = labels.reshape((labels.shape[0], 1))
     print("FEATURES SHAPE")
     print(features.shape)
     print("LABELS SHAPE")
@@ -25,16 +24,15 @@ if __name__ == "__main__":
     print("Y TRAIN")
     print(y_train.shape)
 
-    # input_shape = (features.shape[1], 1)
     data_dim = features.shape[2]
     num_outputs = labels.shape[2]
-    num_hidden_states = 128#data_dim
+    num_hidden_states = 200#data_dim
 
     model = Sequential()
     model.add(LSTM(num_hidden_states, return_sequences=True, input_shape=(1, data_dim)))
     model.add(Dense(num_outputs, activation='softmax'))
     model.summary()
     model.compile(loss='categorical_crossentropy',
-                  optimizer=RMSprop(lr=0.01), metrics=['accuracy'])
-    model.fit(x_train, y_train, batch_size=1,
-              epochs=8, validation_data=(x_val, y_val))
+                  optimizer='adam', metrics=['accuracy'])
+    model.fit(x_train, y_train, batch_size=25,
+              epochs=100, validation_data=(x_val, y_val))

@@ -5,7 +5,7 @@ import numpy as np
 from enum import Enum
 import glob, os
 import pandas
-
+import unidecode
 UTTERANCES_NPY_FILENAME = "utterances.npy"
 UTTERANCES_CSV_FILENAME = "utterances.csv"
 
@@ -24,6 +24,22 @@ class Activity(Enum):
 	Watch_TV = 11
 	Work = 12
 
+ACTIVITY_LABELS = {
+    "bathing": 0,
+    "bed_toilet_transition": 1,
+    "eating": 2,
+    "enter_home": 3,
+    "housekeeping": 4,
+    "leave_home": 5,
+    "meal_preparation": 6,
+    "personal_hygiene": 7,
+    "sleep": 8,
+    "sleeping_not_in_bed": 9,
+    "wandering_in_room": 10,
+    "watch_tv": 11,
+    "work": 12,
+}
+
 # for BedToToilet amd SleepingInBed, how do we determine which bedroom is relevant?
 # Otherwise the lights in all 3 bedrooms will turn on and off.
 # This dictionary was created using the 2010 dataset.
@@ -35,16 +51,31 @@ def extract_utterances_from_csv(list_of_csv_filenames, savetxt_filename):
 	final_utterances = []
 	final_labels = []
 	for csv_filename in list_of_csv_filenames:
+		print(csv_filename)
 		with open(csv_filename, "rb") as f:
 			reader = csv.DictReader(f)
-			print(reader.fieldnames)
+			# print(reader.fieldnames)
+			i = 0
 			for row in reader:
 				utterances = row['Answer.WritingTexts']
 				labels = row['Answer.Activity']
-				utterances = [u.decode('utf-8') for u in utterances.split("|")]
+				utterances = utterances.split("|")
+				for u in utterances:
+					# print(u)
+					u = u.encode('utf-8')
+					u = u.decode('ascii', 'ignore')
+					u = str(u)
+					# u = unidecode.unidecode(u)
+					# u = u.encode('ascii', 'ignore')
 				labels = labels.split("|")
+				for label in labels:
+					if label.lower() not in ACTIVITY_LABELS:
+						print(i)
+						print(label)
+						print("LABEL IS NOT IN ACTIVITY LABELS. ERROR")
 				final_utterances.extend(utterances)
 				final_labels.extend(labels)
+				i+=1
 		if len(final_utterances) != len(final_labels):
 				print("CSV IS NOT FORMATTED CORRECTLY. MISMATCHING NUMBER OF LABELS AND UTTERANCES.")
 
